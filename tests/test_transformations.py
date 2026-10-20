@@ -129,6 +129,26 @@ def test_trim_string_columns_turns_blank_into_null(spark):
         ("Russell D'Ascenzo", "Russell D'Ascenzo"),
         ("Peter Bühler", "Peter Bühler"),
         ("Paul  4567Van Hugh", "Paul Van Hugh"),
+        # junk with spaces in the middle of a word
+        ("Ad.       ..am Hart", "Adam Hart"),
+        ("Anth 34789ony Witt", "Anthony Witt"),
+        ("Tho   12 =-.mas Boland", "Thomas Boland"),
+        ("Rick Wi 4567@#$lson", "Rick Wilson"),
+        ("Fra9876nk Gasti  ;.,.,neau", "Frank Gastineau"),
+        ("   _Mike Vitt 12313orini", "Mike Vittorini"),
+        ("B         ecky Martin", "Becky Martin"),
+        # look-alike characters
+        ("Bi1l Donatelli", "Bill Donatelli"),
+        ("Ji11 Stevenson", "Jill Stevenson"),
+        ("N0ra Paige", "Nora Paige"),
+        ("C@thy Armstrong", "Cathy Armstrong"),
+        ("Fred Wa55erman", "Fred Wasserman"),
+        ("Karen Dan!els", "Karen Daniels"),
+        ("Maribeth 5chnelling", "Maribeth Schnelling"),
+        # digits that are not look-alikes are still removed
+        ("Mitch Willin0009gham", "Mitch Willingham"),
+        ("Brosin34a Hoffman 09", "Brosina Hoffman"),
+        ("Joy Bell-", "Joy Bell"),
         ("   ", UNKNOWN),
         ("@#$%", UNKNOWN),
         (None, UNKNOWN),
@@ -142,7 +162,7 @@ def test_clean_customer_name(spark, dirty, expected):
 def test_enriched_customers_cleans_dedupes_and_drops_missing_ids(spark):
     raw = spark.createDataFrame(
         [
-            (" c1 ", "Ali@ce Smith", " United States ", " A@X.COM "),
+            (" c1 ", "Ali#ce Smith", " United States ", " A@X.COM "),
             ("C1", None, "United States", "a@x.com"),  # duplicate id, no name
             (None, "Ghost", "United States", "g@x.com"),  # no id -> dropped
             ("C2", "Bob", None, "b@x.com"),  # missing country

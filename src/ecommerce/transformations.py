@@ -187,20 +187,40 @@ def read_raw_customers(spark: SparkSession, path: str, sheet_name=0) -> DataFram
 # Enriched layer: customers
 # ---------------------------------------------------------------------------
 
+# Characters used in place of a letter in the source names ('Bi1l', 'C@thy', 'Wa55erman').
+LOOKALIKE_LETTERS = {"1": "l", "0": "o", "5": "s", "@": "a", "!": "i"}
+
+# A run of junk (anything but letters) that contains at least one non-space character.
+_JUNK_RUN = r"[^\p{L}]*[^\p{L}\s][^\p{L}]*"
+
+
 def clean_customer_name(col: Column) -> Column:
     """Remove the noise injected into names in the source file.
 
-    Examples: 'Pete@#$ Takahito' -> 'Pete Takahito', 'Tam&^*ara Willing___)ham' ->
-    'Tamara Willingham', "Mary O'Rourke" is kept as-is. Noise that added a space cannot
-    be undone ('Kat rina Bavinger' stays as it is) - see README assumptions.
+    Examples: 'Pete@#$ Takahito' -> 'Pete Takahito', 'Anth 34789ony Witt' -> 'Anthony Witt',
+    'Bi1l Donatelli' -> 'Bill Donatelli', "Mary O'Rourke" is kept as-is. A plain space with
+    no other noise is left alone ('Kat rina Bavinger') - see README assumptions.
 
-    Rules:
-      1. keep only letters (any language, e.g. 'Bühler'), whitespace and apostrophes
-      2. keep an apostrophe only in the O'Brien / D'Ascenzo pattern (letter ' Uppercase)
-      3. collapse repeated whitespace and trim
-      4. NULL / empty -> 'Unknown'
+    Rules, in order:
+      1. a look-alike character inside a word becomes the letter it replaced
+         ('Bi1l' -> 'Bill', 'Wa55erman' -> 'Wasserman'); at the start of a word followed by
+         lowercase it becomes the capital letter ('5chnelling' -> 'Schnelling')
+      2. junk between a letter and a lowercase letter is removed together with its spaces,
+         rejoining split words ('Tho   12 =-.mas' -> 'Thomas'); junk before an uppercase
+         letter keeps the space ('Paul  4567Van Hugh' -> 'Paul Van Hugh')
+      3. a single capital split from the rest of its word is rejoined ('B   ecky' -> 'Becky')
+      4. keep only letters (any language, e.g. 'Bühler'), whitespace and apostrophes
+      5. keep an apostrophe only in the O'Brien / D'Ascenzo pattern (letter ' Uppercase)
+      6. collapse repeated whitespace and trim
+      7. NULL / empty -> 'Unknown'
     """
-    c = F.regexp_replace(col, r"[^\p{L}\s']", "")
+    c = col
+    for char, letter in LOOKALIKE_LETTERS.items():
+        c = F.regexp_replace(c, rf"(?<=[\p{{L}}{char}]){char}(?={char}*(\p{{L}}|\s|$))", letter)
+        c = F.regexp_replace(c, rf"(?<=^|\s){char}(?=\p{{Ll}})", letter.upper())
+    c = F.regexp_replace(c, rf"(?<=\p{{L}}){_JUNK_RUN}(?=\p{{Ll}})", "")
+    c = F.regexp_replace(c, r"(?<=(^|\s)\p{Lu})\s+(?=\p{Ll})", "")
+    c = F.regexp_replace(c, r"[^\p{L}\s']", "")
     c = F.regexp_replace(c, r"(?<!\p{L})'|'(?!\p{Lu})", "")
     c = F.trim(F.regexp_replace(c, r"\s+", " "))
     return F.when(c.isNull() | (c == ""), F.lit(UNKNOWN)).otherwise(c)

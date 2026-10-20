@@ -18,7 +18,7 @@ notebooks/                  Databricks notebooks (source format .py)
     04_sql_analysis         SQL: profit by year / year+category / customer / customer+year
     05_run_unit_tests       runs the pytest suite on Databricks
     run_all                 runs everything in order
-tests/                      pytest unit tests (54 tests)
+tests/                      pytest unit tests (71 tests)
 ```
 
 ## Tables produced (`workspace.ecommerce.*` by default)
@@ -58,7 +58,7 @@ Locally the suite also runs the file readers and an end-to-end check on the real
 
 | Finding (in the source data) | Handling |
 |---|---|
-| 74 customer names contain digits/symbols (`Pete@#$ Takahito`, `Tam&^*ara Willing___)ham`) and extra whitespace | Keep only letters (Unicode, so `Bühler` survives), spaces and O'Brien-style apostrophes; collapse whitespace |
+| 74 customer names contain digits/symbols (`Pete@#$ Takahito`, `Tam&^*ara Willing___)ham`) and extra whitespace | Look-alike characters become the letter they replaced (`Bi1l` → `Bill`, `Wa55erman` → `Wasserman`); junk inside a word is removed with its spaces (`Anth 34789ony` → `Anthony`); then keep only letters (Unicode, so `Bühler` survives), spaces and O'Brien-style apostrophes, and collapse whitespace |
 | 8 customers have no name | `customer_name = 'Unknown'` (the customer and their orders are kept) |
 | 33 product IDs appear twice with different name/state/price (same category & sub-category) | Keep one deterministic row per `product_id` (first by product name). Otherwise the join would double those orders' profit. `build_enriched_orders` refuses non-unique master data |
 | 204 orders reference product IDs not present in Products.csv | Left join; category/sub-category = `'Unknown'` so total profit still reconciles |
@@ -75,8 +75,10 @@ The current source files produce **0 rejected orders**: all 9,994 orders reach `
 * **Year** means the year of the **order date**.
 * **Customer** in aggregates is `customer_id` + `customer_name`; the id is kept because names aren't
   unique and some are `Unknown`.
-* Name cleaning can't undo noise that added a space inside a name (e.g. `Kat rina Bavinger`); about 20
-  such names stay as-is rather than guessing. `customer_id` is the reliable key.
+* Name cleaning recovers all but two of the noisy names. `Bi 8761l Shonely` becomes `Bil Shonely` and
+  `David K ';lendrick` becomes `David Klendrick`, because the original letters can't be worked out from the
+  data. A plain space with no other noise (`Kat rina Bavinger`) is left as-is rather than guessed.
+  `customer_id` is the reliable key, so profit figures are not affected.
 * Each run is a full refresh (`overwrite`), so re-running is idempotent. An incremental `MERGE` would be
   the next step for daily loads.
 * Excel is read with pandas + openpyxl because Spark has no built-in Excel reader and the spark-excel
