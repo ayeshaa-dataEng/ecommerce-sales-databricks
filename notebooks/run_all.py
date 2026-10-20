@@ -1,8 +1,5 @@
 # Databricks notebook source
-# MAGIC %md
-# MAGIC # Run the whole pipeline
-# MAGIC Runs every notebook in order. Each one runs in its own context, so its `%pip` cells work.
-# MAGIC (In production the same sequence would be a Databricks Job with one task per notebook.)
+
 
 # COMMAND ----------
 
