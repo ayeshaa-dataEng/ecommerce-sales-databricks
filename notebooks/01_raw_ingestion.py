@@ -1,15 +1,4 @@
 # Databricks notebook source
-# MAGIC %md
-# MAGIC # 01 · Raw layer
-# MAGIC Loads each source file into its own raw Delta table **as-is**:
-# MAGIC values are not changed, only column names are converted to snake_case (Delta does not allow
-# MAGIC spaces) and two audit columns are added: `_source_file`, `_ingested_at`.
-# MAGIC
-# MAGIC | Source | Format | Raw table |
-# MAGIC |---|---|---|
-# MAGIC | Customer.xlsx | Excel | `raw_customers` |
-# MAGIC | Products.csv | CSV | `raw_products` |
-# MAGIC | Orders.json | multi-line JSON array | `raw_orders` |
 
 # COMMAND ----------
 
@@ -21,10 +10,7 @@
 
 # COMMAND ----------
 
-# MAGIC %md
-# MAGIC ### Land the source files in the volume
-# MAGIC If you already uploaded the files to the volume they are used as-is. Otherwise the copies
-# MAGIC committed in the repo's `data/` folder are copied there.
+
 
 # COMMAND ----------
 
