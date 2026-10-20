@@ -1,9 +1,5 @@
 # Databricks notebook source
-# MAGIC %md
-# MAGIC # 05 · Unit tests
-# MAGIC Runs the pytest suite in `tests/` on the notebook's Spark session.
-# MAGIC Tests that read local files with Spark are skipped here (serverless Spark cannot read the
-# MAGIC driver's local disk); they run locally / in CI.
+
 
 # COMMAND ----------
 
