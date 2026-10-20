@@ -1,8 +1,4 @@
 # Databricks notebook source
-
-
-# COMMAND ----------
-
 # MAGIC %run ./00_config
 
 # COMMAND ----------
@@ -16,19 +12,11 @@ raw_orders = spark.table(TABLES["raw_orders"])
 
 # COMMAND ----------
 
-
-
-# COMMAND ----------
-
 enriched_customers = tr.build_enriched_customers(raw_customers)
 enriched_products = tr.build_enriched_products(raw_products)
 
 write_table(enriched_customers, TABLES["enriched_customers"], "Cleaned customers, one row per customer_id")
 write_table(enriched_products, TABLES["enriched_products"], "Cleaned products, one row per product_id")
-
-# COMMAND ----------
-
-
 
 # COMMAND ----------
 
@@ -43,9 +31,6 @@ enriched_orders = tr.build_enriched_orders(
 write_table(enriched_orders, TABLES["enriched_orders"],
             "Orders with profit (2 dp), customer name/country, product category/sub-category")
 write_table(rejected_orders, TABLES["rejected_orders"], "Orders that failed validation")
-
-# COMMAND ----------
-
 
 # COMMAND ----------
 

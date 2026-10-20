@@ -1,8 +1,4 @@
 # Databricks notebook source
-
-
-# COMMAND ----------
-
 dbutils.widgets.text("catalog", "workspace")
 dbutils.widgets.text("schema", "ecommerce")
 dbutils.widgets.text("volume", "raw_files")

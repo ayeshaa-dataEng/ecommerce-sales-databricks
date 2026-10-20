@@ -1,8 +1,4 @@
 # Databricks notebook source
-
-
-# COMMAND ----------
-
 # MAGIC %pip install pytest openpyxl --quiet
 
 # COMMAND ----------
