@@ -1,12 +1,5 @@
 # Databricks notebook source
-# MAGIC %md
-# MAGIC # 02 · Enriched layer
-# MAGIC
-# MAGIC * `enriched_customers` – trimmed, de-duplicated, customer names cleaned of noise characters
-# MAGIC * `enriched_products` – trimmed, typed price, **one row per product_id**
-# MAGIC * `enriched_orders` – order lines + profit rounded to 2 dp + customer name & country +
-# MAGIC   product category & sub-category
-# MAGIC * `rejected_orders` – order rows that failed validation, with a `reject_reason` (quarantine)
+
 
 # COMMAND ----------
 
@@ -23,7 +16,7 @@ raw_orders = spark.table(TABLES["raw_orders"])
 
 # COMMAND ----------
 
-# MAGIC %md ### Customers and products
+
 
 # COMMAND ----------
 
@@ -35,7 +28,7 @@ write_table(enriched_products, TABLES["enriched_products"], "Cleaned products, o
 
 # COMMAND ----------
 
-# MAGIC %md ### Orders
+
 
 # COMMAND ----------
 
@@ -53,8 +46,6 @@ write_table(rejected_orders, TABLES["rejected_orders"], "Orders that failed vali
 
 # COMMAND ----------
 
-# MAGIC %md ### Data quality checks
-# MAGIC The job fails loudly if the enrichment lost or duplicated rows.
 
 # COMMAND ----------
 
