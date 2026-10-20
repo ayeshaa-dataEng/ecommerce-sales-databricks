@@ -1,3 +1,16 @@
+# Databricks notebook source
+# MAGIC %md
+# MAGIC # 00 · Configuration
+# MAGIC Shared settings used by every notebook through `%run ./00_config`.
+# MAGIC
+# MAGIC | Widget | Default | Meaning |
+# MAGIC |---|---|---|
+# MAGIC | `catalog` | `workspace` | Unity Catalog catalog (the default one in Databricks Free Edition) |
+# MAGIC | `schema` | `ecommerce` | Schema that holds all tables |
+# MAGIC | `volume` | `raw_files` | Volume where the source files are landed |
+
+# COMMAND ----------
+
 import logging
 import os
 import sys
@@ -10,7 +23,7 @@ CATALOG = dbutils.widgets.get("catalog").strip()
 SCHEMA = dbutils.widgets.get("schema").strip()
 VOLUME = dbutils.widgets.get("volume").strip()
 
-
+# The notebooks live in <repo>/notebooks; the library lives in <repo>/src.
 REPO_ROOT = os.path.dirname(os.getcwd())
 SRC_DIR = os.path.join(REPO_ROOT, "src")
 REPO_DATA_DIR = os.path.join(REPO_ROOT, "data")
