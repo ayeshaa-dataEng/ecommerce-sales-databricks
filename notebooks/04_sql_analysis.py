@@ -1,8 +1,5 @@
 # Databricks notebook source
-# MAGIC %md
-# MAGIC # 04 · SQL reports
-# MAGIC Required aggregates, written in SQL on top of `profit_aggregate`.
-# MAGIC The same statements live in `src/ecommerce/sql_queries.py`, where they are unit tested.
+
 
 # COMMAND ----------
 
@@ -15,7 +12,6 @@ spark.sql(f"USE SCHEMA {SCHEMA}")
 
 # COMMAND ----------
 
-# MAGIC %md ### 1. Profit by Year
 
 # COMMAND ----------
 
@@ -28,7 +24,6 @@ spark.sql(f"USE SCHEMA {SCHEMA}")
 
 # COMMAND ----------
 
-# MAGIC %md ### 2. Profit by Year + Product Category
 
 # COMMAND ----------
 
@@ -42,7 +37,7 @@ spark.sql(f"USE SCHEMA {SCHEMA}")
 
 # COMMAND ----------
 
-# MAGIC %md ### 3. Profit by Customer
+
 
 # COMMAND ----------
 
@@ -56,7 +51,7 @@ spark.sql(f"USE SCHEMA {SCHEMA}")
 
 # COMMAND ----------
 
-# MAGIC %md ### 4. Profit by Customer + Year
+
 
 # COMMAND ----------
 
