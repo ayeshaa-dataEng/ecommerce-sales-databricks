@@ -1,8 +1,5 @@
 # Databricks notebook source
-# MAGIC %md
-# MAGIC # 03 · Aggregate layer
-# MAGIC `profit_aggregate`: total profit by **Year, Product Category, Product Sub Category, Customer**
-# MAGIC (customer_id + customer_name; the id is kept because names are not unique).
+
 
 # COMMAND ----------
 
