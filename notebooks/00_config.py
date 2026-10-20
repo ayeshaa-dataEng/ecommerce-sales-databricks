@@ -1,13 +1,5 @@
 # Databricks notebook source
-# MAGIC %md
-# MAGIC # 00 · Configuration
-# MAGIC Shared settings used by every notebook through `%run ./00_config`.
-# MAGIC
-# MAGIC | Widget | Default | Meaning |
-# MAGIC |---|---|---|
-# MAGIC | `catalog` | `workspace` | Unity Catalog catalog (the default one in Databricks Free Edition) |
-# MAGIC | `schema` | `ecommerce` | Schema that holds all tables |
-# MAGIC | `volume` | `raw_files` | Volume where the source files are landed |
+
 
 # COMMAND ----------
 
